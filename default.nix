@@ -15,9 +15,10 @@
   }
 }:
 with obelisk;
-let deps = obelisk.nixpkgs.thunkSet ./dep;
-    rhyolite = (import deps.rhyolite { inherit obelisk; });
-in project ./. ({ pkgs, ... }: {
+let
+deps = obelisk.nixpkgs.thunkSet ./dep;
+rhyolite = (import deps.rhyolite { inherit obelisk; });
+p = project ./. ({ pkgs, ... }: {
   overrides = pkgs.lib.composeExtensions
     rhyolite.haskellOverrides
     (_: _: {});
@@ -25,4 +26,5 @@ in project ./. ({ pkgs, ... }: {
   android.displayName = "Obelisk Minimal Example";
   ios.bundleIdentifier = "systems.obsidian.obelisk.examples.minimal";
   ios.bundleName = "Obelisk Minimal Example";
-})
+});
+in builtins.removeAttrs p ["ios" "android"]

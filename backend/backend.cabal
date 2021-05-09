@@ -7,13 +7,28 @@ library
   hs-source-dirs: src
   if impl(ghcjs)
     buildable: False
-  build-depends: base
+  build-depends: aeson
+               , aeson-gadt-th
+               , base
                , common
+               , constraints-extras
+               , dependent-sum
+               , dependent-sum-template
                , frontend
+               , gargoyle-postgresql
+               , gargoyle-postgresql-connect
+               , mtl
+               , postgresql-simple
+               , resource-pool
+               , rhyolite-backend
+               , rhyolite-backend-db
+               , rhyolite-backend-notification-postgres
                , obelisk-backend
                , obelisk-route
+               , vessel
   exposed-modules:
     Backend
+    Backend.Notification
   ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
 
 executable backend

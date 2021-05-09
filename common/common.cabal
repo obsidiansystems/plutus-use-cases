@@ -5,10 +5,15 @@ build-type: Simple
 
 library
   hs-source-dirs: src
-  build-depends: base
-               , obelisk-route
+  build-depends: aeson
+               , aeson-gadt-th
+               , base
+               , constraints-extras
+               , dependent-sum-template
                , mtl
+               , obelisk-route
                , text
+               , vessel
   exposed-modules:
     Common.Api
     Common.Route

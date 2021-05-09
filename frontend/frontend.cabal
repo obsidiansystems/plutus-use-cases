@@ -15,6 +15,7 @@ library
                , obelisk-generated-static
                , rhyolite-frontend
                , text
+               , vessel
   exposed-modules:
     Frontend
   ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
