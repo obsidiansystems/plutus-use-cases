@@ -15,7 +15,12 @@
   }
 }:
 with obelisk;
-project ./. ({ ... }: {
+let deps = obelisk.nixpkgs.thunkSet ./dep;
+    rhyolite = (import deps.rhyolite { inherit obelisk; });
+in project ./. ({ pkgs, ... }: {
+  overrides = pkgs.lib.composeExtensions
+    rhyolite.haskellOverrides
+    (_: _: {});
   android.applicationId = "systems.obsidian.obelisk.examples.minimal";
   android.displayName = "Obelisk Minimal Example";
   ios.bundleIdentifier = "systems.obsidian.obelisk.examples.minimal";

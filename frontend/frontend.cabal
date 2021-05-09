@@ -13,6 +13,7 @@ library
                , reflex-dom
                , obelisk-executable-config-lookup
                , obelisk-generated-static
+               , rhyolite-frontend
                , text
   exposed-modules:
     Frontend

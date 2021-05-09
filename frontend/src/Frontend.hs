@@ -8,13 +8,12 @@ import Control.Monad
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import Language.Javascript.JSaddle (eval, liftJSM)
-
 import Obelisk.Frontend
 import Obelisk.Configs
 import Obelisk.Route
 import Obelisk.Generated.Static
-
 import Reflex.Dom.Core
+import Rhyolite.Frontend.App
 
 import Common.Api
 import Common.Route
@@ -37,7 +36,7 @@ frontend = Frontend
       -- JavaScript. The following will generate a `blank` widget on the server and
       -- print "Hello, World!" on the client.
       prerender_ blank $ liftJSM $ void $ eval ("console.log('Hello, World!')" :: T.Text)
-
+      _ <- runObeliskRhyoliteWidget vesselToWire "common/route" validFullEncoder (BackendRoute_Listen :/ ()) pachamamaClient
       elAttr "img" ("src" =: static @"obelisk.jpg") blank
       el "div" $ do
         exampleConfig <- getConfig "common/example"
