@@ -6,13 +6,21 @@
 
 module Frontend where
 
+import Prelude hiding (id, (.), filter)
+import Control.Category
+
 import Control.Monad
+import Data.Int
+import Data.Semigroup (First(..))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import Data.Vessel
+import Data.Vessel.Identity
+import Data.Vessel.Vessel
+import Data.Vessel.ViewMorphism
 import Language.Javascript.JSaddle (eval, liftJSM)
-import Obelisk.Frontend
 import Obelisk.Configs
+import Obelisk.Frontend
 import Obelisk.Route
 import Obelisk.Generated.Static
 import Reflex.Dom.Core
@@ -55,4 +63,10 @@ frontend = Frontend
 
 app :: MonadRhyoliteWidget (V (Const SelectedCount)) Api t m => m ()
 app = do
+  increment <- button "+"
+  requesting_ $ Api_IncrementCounter <$ increment
+  el "div" $ display =<< viewCounter
   return ()
+
+viewCounter :: (MonadQuery t (Vessel Q (Const SelectedCount)) m, Reflex t) => m (Dynamic t (Maybe (Maybe Int32)))
+viewCounter = (fmap.fmap.fmap) (getFirst . runIdentity) $ queryViewMorphism 1 $ constDyn $ vessel Q_Counter . identityV

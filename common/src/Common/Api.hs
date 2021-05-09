@@ -9,6 +9,7 @@ module Common.Api where
 import Data.Aeson
 import Data.Aeson.GADT.TH
 import Data.Constraint.Extras.TH
+import Data.Int
 import Data.GADT.Compare.TH
 import Data.GADT.Show.TH
 import Data.Semigroup (First(..))
@@ -20,10 +21,10 @@ commonStuff = "Here is a string defined in Common.Api"
 type V = Vessel Q
 
 data Q (v :: (* -> *) -> *) where
-  Q :: Q (IdentityV (First (Maybe ())))
+  Q_Counter :: Q (IdentityV (First (Maybe Int32)))
 
 data Api :: * -> * where
-  Api :: Api ()
+  Api_IncrementCounter :: Api ()
 
 deriveJSONGADT ''Api
 deriveArgDict ''Api

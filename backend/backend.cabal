@@ -10,6 +10,9 @@ library
   build-depends: aeson
                , aeson-gadt-th
                , base
+               , beam-automigrate
+               , beam-core
+               , beam-postgres
                , common
                , constraints-extras
                , dependent-sum
@@ -17,6 +20,7 @@ library
                , frontend
                , gargoyle-postgresql
                , gargoyle-postgresql-connect
+               , monad-logger
                , mtl
                , postgresql-simple
                , resource-pool
@@ -29,6 +33,7 @@ library
   exposed-modules:
     Backend
     Backend.Notification
+    Backend.Schema
   ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
 
 executable backend
