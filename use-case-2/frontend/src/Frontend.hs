@@ -110,7 +110,7 @@ navBar mWid = divClass "navbar navbar-expand-md navbar-dark bg-dark" $ do
   divClass "container-fluid" $ do
     elAttr "a" ("class" =: "navbar-brand" <> "href" =: "#") $ text "POKE-DEX - Plutus Obelisk Koin Economy Decentralized Exchange "
     -- Note: This websocket keeps track of Slot number
-    -- ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+    -- ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
     -- _ <- widgetHold blank $ ffor (_webSocket_recv ws) $ \(a :: Maybe Aeson.Value) -> el "p" $ text $ T.pack $ show a
     case mWid of
       Nothing -> return never
@@ -136,7 +136,7 @@ navBar mWid = divClass "navbar navbar-expand-md navbar-dark bg-dark" $ do
           text $ "ADA Balance: "
           fmap (switch . current) $ prerender (return never) $ do
             -- incorporate the use of PAB's websockets to display the wallet's current Ada Balance
-            ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+            ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
             -- filter for websocket events relevent to funds that contain the "Funds" tag and "NewObservableState" tag
             let fundsEvent = wsFilterFunds $ _webSocket_recv ws
             widgetHold_ blank $ ffor fundsEvent $ \(mIncomingWebSocketData :: Maybe Aeson.Value) -> case mIncomingWebSocketData of
@@ -224,7 +224,7 @@ swapDashboard wid = Workflow $ do
                     -- This response returns transaction fee information, it does not return the swap response
                     _responseVal <- requesting $ tagPromptlyDyn requestLoad swap
                     observableStateEv <- fmap (switch . current) $ prerender (return never) $ do
-                      ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+                      ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
                       let
                           observableStateSuccessEvent = flip ffilter (_webSocket_recv ws) $ \(mIncomingWebSocketData :: Maybe Aeson.Value )
                             -> case mIncomingWebSocketData of
@@ -263,7 +263,7 @@ swapDashboard wid = Workflow $ do
         divClass "card-header" $ elClass "h4" "my-0 font-weight-normal" $ text "Transaction Details"
         divClass "card-body" $ do
           poolMapEv <- fmap (switch . current) $ prerender (return never) $ do
-            ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+            ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
             -- Pools is used to get information about liquidity pools and token pairs to provide swap estimations
             let poolsEvent = wsFilterPools $ _webSocket_recv ws
             dynPoolMap <- holdDyn Map.empty $ ffor poolsEvent $ \mIncomingPoolsWebSocketData -> do
@@ -318,7 +318,7 @@ portfolioDashboard wid = Workflow $ do
       requesting_ $ (Api_CallFunds (ContractInstanceId wid)) <$ (leftmost [pb, () <$ pollingEvent])
       fmap (switch . current) $ prerender (return never) $ do
         -- incorporate the use of PAB's websockets to display the wallet's current Ada Balance
-        ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+        ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
         -- filter for websocket events relevent to funds that contain the "Funds" tag and "NewObservableState" tag
         let fundsEvent = wsFilterFunds $ _webSocket_recv ws
         widgetHold_ blank $ ffor fundsEvent $ \(mIncomingFundsWebSocketData :: Maybe Aeson.Value) -> case mIncomingFundsWebSocketData of
@@ -331,7 +331,7 @@ portfolioDashboard wid = Workflow $ do
                 elAttr "th" ("scope" =: "col") $ text "Balance"
               let formattedTokenDetails = Map.filter
                     -- Note: If token names change, this hash will need to change. Otherwise, the token balances will not be found.
-                    (\(_,cs) -> cs == "4195b7e88acc9a061b21f962266770d2e676f76f2a686f6fa15ac155f383c9ad") $
+                    (\(_,cs) -> cs == "185b9b81dee4eafedd25b87cf07e710c7b5b4e56f99c4b94c4fc0481") $
                     parseTokensToMap currencyDetails
               el"tbody" $ do
                 forM_ (Map.toList formattedTokenDetails) $ \(tokenName, (tokenBalance,_)) -> do
@@ -365,7 +365,7 @@ poolDashboard wid = Workflow $ do
       el "p" $ text "View your token pool liquidity balances, stake tokens, or redeem liquidity"
       fmap (switch . current) $ prerender (return never) $ do
           -- incorporate the use of PAB's websockets to display the wallet's current Pool Balance
-          ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+          ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
           -- filter for websocket events relevent to funds that contain the "Funds" tag and "NewObservableState" tag
           let fundsEvent = wsFilterFunds $ _webSocket_recv ws
               poolsEvent = wsFilterPools $ _webSocket_recv ws
@@ -384,7 +384,7 @@ poolDashboard wid = Workflow $ do
                       poolMap = parseLiquidityTokensToMap poolDetails
                       formattedTokenDetails = Map.filter
                         -- Note: If token names change, this hash will need to change. Otherwise, the pool balances will not be found.
-                        (\(_,cs) -> cs == "fe5cdcd31cf4e2facf00b6e9f0fa836adf3670f7c6c0e90cbd2c2b9719961f69") $
+                        (\(_,cs) -> cs == "1a1d05e60c335471205d1a303e0df0fb7d38083a695a1559b6b2b354") $
                         parseTokensToMap currencyDetails
                   case Map.toList formattedTokenDetails of
                     []-> blank
@@ -469,7 +469,7 @@ poolDashboard wid = Workflow $ do
                           -- This response doesn't return anything useful, so it is thrown away
                           _ <- requesting $ tagPromptlyDyn requestLoad redeem
                           observableStateEv <- fmap (switch . current) $ prerender (return never) $ do
-                            ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+                            ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
                             let observableStateSuccessEvent = flip ffilter (_webSocket_recv ws) $ \(mIncomingWebSocketData :: Maybe Aeson.Value )
                                   -> case mIncomingWebSocketData of
                                     Nothing -> False
@@ -507,7 +507,7 @@ poolDashboard wid = Workflow $ do
           divClass "card-header" $ elClass "h4" "my-0 font-weight-normal" $ text "Redeem Transaction Details"
           divClass "card-body" $ do
             poolMapEv <- fmap (switch . current) $ prerender (return never) $ do
-              ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+              ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
               let poolsEvent = wsFilterPools $ _webSocket_recv ws
               -- use pool map to calculate and display tokens to be redeemed when removing liquidity
               dynPoolMap <- holdDyn Map.empty $ ffor poolsEvent $ \mIncomingPoolsWebSocketData -> do
@@ -604,7 +604,7 @@ poolDashboard wid = Workflow $ do
                           -- This response doesn't return anything useful, so it is thrown away
                           _ <- requesting $ tagPromptlyDyn requestLoad stake
                           observableStateEv <- fmap (switch . current) $ prerender (return never) $ do
-                            ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+                            ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
                             let observableStateSuccessEvent = flip ffilter (_webSocket_recv ws) $ \(mIncomingWebSocketData :: Maybe Aeson.Value )
                                   -> case mIncomingWebSocketData of
                                     Nothing -> False
@@ -641,7 +641,7 @@ poolDashboard wid = Workflow $ do
         divClass "card-header" $ elClass "h4" "my-0 font-weight-normal" $ text "Stake Transaction Details"
         divClass "card-body" $ do
           poolMapEv <- fmap (switch . current) $ prerender (return never) $ do
-            ws <- jsonWebSocket ("ws://localhost:8080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
+            ws <- jsonWebSocket ("ws://localhost:9080/ws/" <> wid) (def :: WebSocketConfig t Aeson.Value)
             let poolsEvent = wsFilterPools $ _webSocket_recv ws
             -- use pool map to calculate and display tokens to be redeemed when removing liquidity
             dynPoolMap <- holdDyn Map.empty $ ffor poolsEvent $ \mIncomingPoolsWebSocketData -> do

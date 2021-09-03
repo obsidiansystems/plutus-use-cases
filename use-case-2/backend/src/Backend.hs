@@ -104,7 +104,7 @@ queryHandler pool v = buildV v $ \case
 
 getWallets :: Manager -> Pool Pg.Connection -> IO ()
 getWallets httpManager pool = do
-  initReq <- parseRequest "http://localhost:8080/api/new/contract/instances"
+  initReq <- parseRequest "http://localhost:9080/api/contract/instances"
   let req = initReq { method = "GET" }
   resp <- httpLbs req httpManager
   let val = Aeson.eitherDecode (responseBody resp) :: Either String Aeson.Value
@@ -137,7 +137,7 @@ getPooledTokens httpManager pool = do
     Just wid -> do
       -- In order to retreive list of pooled tokens, a request must be made to the pools endpoint first and then the response
       -- can be found be found in instances within the observable state key
-      let prString = "http://localhost:8080/api/new/contract/instance/" ++ (T.unpack $ _contract_id wid) ++ "/endpoint/pools"
+      let prString = "http://localhost:9080/api/contract/instance/" ++ (T.unpack $ _contract_id wid) ++ "/endpoint/pools"
       print $ "prString: " ++ prString -- DEBUG
       poolReq <- parseRequest prString
       let reqBody = "[]"
@@ -150,7 +150,7 @@ getPooledTokens httpManager pool = do
       return ()
   -- This delay is necessary to give the chain 1 second to process the previous request and update the observable state
   threadDelay 1000000
-  initReq <- parseRequest "http://localhost:8080/api/new/contract/instances"
+  initReq <- parseRequest "http://localhost:9080/api/contract/instances"
   let req = initReq { method = "GET" }
   resp <- httpLbs req httpManager
   let val = Aeson.eitherDecode (responseBody resp) :: Either String Aeson.Value
@@ -177,7 +177,7 @@ getPooledTokens httpManager pool = do
 
   -- This function's is modeled after the following curl that submits a request to perform a swap against PAB.
   {-
-  curl -H "Content-Type: application/json"      --request POST   --data '{"spAmountA":112,"spAmountB":0,"spCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"spCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:8080/api/new/contract/instance/36951109-aacc-4504-89cc-6002cde36e04/endpoint/swap
+  curl -H "Content-Type: application/json"      --request POST   --data '{"spAmountA":112,"spAmountB":0,"spCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"spCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:9080/api/contract/instance/36951109-aacc-4504-89cc-6002cde36e04/endpoint/swap
   -}
 executeSwap :: Manager
   -> Pool Pg.Connection
@@ -186,7 +186,7 @@ executeSwap :: Manager
   -> (Coin AssetClass, Amount Integer)
   -> IO (Either String Aeson.Value)
 executeSwap httpManager pool contractId (coinA, amountA) (coinB, amountB) = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" ++ contractId ++ "/endpoint/swap"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" ++ contractId ++ "/endpoint/swap"
       reqBody = SwapParams {
           spCoinA = coinA
         , spCoinB = coinB
@@ -208,7 +208,7 @@ executeSwap httpManager pool contractId (coinA, amountA) (coinB, amountB) = do
   -- MVar that will hold response to swap request sent
   eitherObState <- newEmptyMVar
   -- Use websocket connection to fetch observable state response
-  (eitherObState', endTime) <- WS.runClient "127.0.0.1" 8080 ("/ws/" ++ contractId) $ \conn -> do
+  (eitherObState', endTime) <- WS.runClient "127.0.0.1" 9080 ("/ws/" ++ contractId) $ \conn -> do
     -- Allow enough time to pass for observable state to be updated (10 secs)
     let processData = do
           incomingData :: ByteString <- WS.receiveData conn
@@ -251,11 +251,11 @@ executeSwap httpManager pool contractId (coinA, amountA) (coinB, amountB) = do
     Right (_txFeeDetails, _) -> return $ Left "Unexpected script size data type"
 
 {-
-curl -H "Content-Type: application/json"      --request POST   --data '{"apAmountA":4500,"apAmountB":9000,"apCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"apCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:8080/api/new/contract/instance/3b0bafe2-14f4-4d34-a4d8-633afb8e52eb/endpoint/add
+curl -H "Content-Type: application/json"      --request POST   --data '{"apAmountA":4500,"apAmountB":9000,"apCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"apCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:9080/api/contract/instance/3b0bafe2-14f4-4d34-a4d8-633afb8e52eb/endpoint/add
 -}
 executeStake :: Manager -> String -> (Coin AssetClass , Amount Integer) -> (Coin AssetClass, Amount Integer) -> IO (Either String Aeson.Value)
 executeStake httpManager contractId (coinA, amountA) (coinB, amountB) = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" ++ contractId ++ "/endpoint/add"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" ++ contractId ++ "/endpoint/add"
       reqBody = AddParams {
           apCoinA = coinA
         , apCoinB = coinB
@@ -276,11 +276,11 @@ executeStake httpManager contractId (coinA, amountA) (coinB, amountB) = do
   (either (\a -> return $ Left a) (\a -> return $ Right $ fst a)) =<< fetchObservableStateFees httpManager contractId
 
 {-
-curl -H "Content-Type: application/json"      --request POST   --data '{"rpDiff":2461,"rpCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"rpCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:8080/api/new/contract/instance/9079d01a-342b-4d4d-88b5-7525ff1118d6/endpoint/remove
+curl -H "Content-Type: application/json"      --request POST   --data '{"rpDiff":2461,"rpCoinB":{"unAssetClass":[{"unCurrencySymbol":"7c7d03e6ac521856b75b00f96d3b91de57a82a82f2ef9e544048b13c3583487e"},{"unTokenName":"A"}]},"rpCoinA":{"unAssetClass":[{"unCurrencySymbol":""},{"unTokenName":""}]}}'      http://localhost:9080/api/contract/instance/9079d01a-342b-4d4d-88b5-7525ff1118d6/endpoint/remove
 -}
 executeRemove :: Manager -> String -> Coin AssetClass -> Coin AssetClass -> Amount Integer -> IO (Either String Aeson.Value)
 executeRemove httpManager contractId coinA coinB amount = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" ++ contractId ++ "/endpoint/remove"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" ++ contractId ++ "/endpoint/remove"
       reqBody = RemoveParams {
           rpCoinA = coinA
         , rpCoinB = coinB
@@ -302,7 +302,7 @@ executeRemove httpManager contractId coinA coinB amount = do
 -- Grabs transaction fees from `observaleState` field from the contract instance status endpoint.
 fetchObservableStateFees :: Manager -> String -> IO (Either String (Aeson.Value, Aeson.Value)) -- (TransactionFees, ScriptSize)
 fetchObservableStateFees httpManager contractId = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" ++ contractId ++ "/status"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" ++ contractId ++ "/status"
   initReq <- parseRequest requestUrl
   resp <- httpLbs initReq httpManager
   let val = Aeson.eitherDecode (responseBody resp) :: Either String Aeson.Value
@@ -322,7 +322,7 @@ fetchObservableStateFees httpManager contractId = do
 -- Grabs `observableState` field from the contract instance status endpoint. This is used to see smart contract's response to latest request processed.
 callFunds :: Manager -> ContractInstanceId Text -> IO ()
 callFunds httpManager contractId = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" <> (unContractInstanceId contractId) <> "/endpoint/funds"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" <> (unContractInstanceId contractId) <> "/endpoint/funds"
       reqBody = "[]"
   initReq <- parseRequest $ T.unpack requestUrl
   let req = initReq
@@ -336,7 +336,7 @@ callFunds httpManager contractId = do
 -- Grabs `observableState` field from the contract instance status endpoint. This is used to see smart contract's response to latest request processed.
 callPools :: Manager -> ContractInstanceId Text -> IO ()
 callPools httpManager contractId = do
-  let requestUrl = "http://localhost:8080/api/new/contract/instance/" <> (unContractInstanceId contractId) <> "/endpoint/pools"
+  let requestUrl = "http://localhost:9080/api/contract/instance/" <> (unContractInstanceId contractId) <> "/endpoint/pools"
       reqBody = "[]"
   initReq <- parseRequest $ T.unpack requestUrl
   let req = initReq
