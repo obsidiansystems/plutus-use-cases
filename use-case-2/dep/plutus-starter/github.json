@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "plutus-starter",
-  "branch": "is-rename-tokens",
+  "branch": "is-bump-ps",
   "private": false,
-  "rev": "addb5a8148ee893ad1195460edc423e9da4b66e5",
-  "sha256": "1hj33sc4czdb984j7cpazyn3x1dsyr3wijh98sp30m6pclnzk14j"
+  "rev": "90653bc94bae285d6aaf98a6bb14dca61a1cafa9",
+  "sha256": "106md1jdmpybjjpqq8ahn1ixl1hq9jj711hddn8hagy1bym61igq"
 }
