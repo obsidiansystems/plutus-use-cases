@@ -10,9 +10,9 @@ Requests that have the intention of communicating with the smart contracts are m
 
 Responses to requests that have been made are not returned from the http request made on the backend of the application. Instead, the responses for the request can be discovered in two ways. 
 
-One way is to submit an empty request to the `http://localhost:8080/api/new/contract/instances` endpoint and parse it's response for the `observableState` JSON key. Within these `observableState` JSON objects, there will be another key called `tag` provide the subject matter of the state being observed. For example, if awaiting the results of a Swap requests the value of `tag` will be `Swapped`.
+One way is to submit an empty request to the `http://localhost:9080/api/contract/instances` endpoint and parse it's response for the `observableState` JSON key. Within these `observableState` JSON objects, there will be another key called `tag` provide the subject matter of the state being observed. For example, if awaiting the results of a Swap requests the value of `tag` will be `Swapped`.
 
-The second way is to listen for incoming smart contract `observableState` via websocket. Connection with the PAB websocket is established in this case using `ws://localhost:8080/ws/[contract-instance-id]`. In the frontend, Reflex-FRP's websocket libraries are used to detect changes in websocket data to generate events to provoke updates within the DOM. This is how it is possible to know when a swap was successful, when to update the wallet balances, fetch, and perform other calculations based on incoming response data.
+The second way is to listen for incoming smart contract `observableState` via websocket. Connection with the PAB websocket is established in this case using `ws://localhost:9080/ws/[contract-instance-id]`. In the frontend, Reflex-FRP's websocket libraries are used to detect changes in websocket data to generate events to provoke updates within the DOM. This is how it is possible to know when a swap was successful, when to update the wallet balances, fetch, and perform other calculations based on incoming response data.
 
 ### Estimations
 
