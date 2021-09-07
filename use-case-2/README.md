@@ -19,7 +19,15 @@ By the end of this README you will be able to run the POKE-DEX on your machine l
 
 ##  Running Plutus Application Backend (PAB)
 
-1. [Run PAB] After installing Obelisk, use `./scripts/run-pab.sh` to launch the PAB and have it listen on port 8080
+1. [Run PAB] After installing Obelisk, run the following commands in a separate terminal:
+```
+ob thunk unpack dep/plutus-starter
+cd plutus-starter
+nix-shell
+cabal build plutus-starter-pab
+cabal exec -- plutus-starter-pab
+```
+that will launch the PAB and have it listen on port 9080
 
 ##  Starting Obelisk Frontend
 
@@ -30,7 +38,7 @@ By the end of this README you will be able to run the POKE-DEX on your machine l
   1. Google Chrome
   1. Chromium
 
-  Note: Firefox can not run the app given that `ob run`(the only instructions provided to see the fronted) does not currently support this browser, app may appear to be broken.
+  Note: Firefox can not run the app given that `ob run --no-interpret ./dep/plutus-starter`(the only instructions provided to see the fronted) does not currently support this browser, app may appear to be broken.
 
 ##  Developing this Plutus Obelisk Dapp
 
@@ -51,7 +59,7 @@ By the end of this README you will be able to run the POKE-DEX on your machine l
       $ nix-shell
       $ cabal new-repl exe:plutus-starter-pab`
       ```
-      At this point you can use `:r ` to reload and see what the GHC compiler has to say about the changes you've made. When you're comfortable with your changes, run `main` to start PAB which will cause it to listen on port 8080
+      At this point you can use `:r ` to reload and see what the GHC compiler has to say about the changes you've made. When you're comfortable with your changes, run `main` to start PAB which will cause it to listen on port 9080
 
   1. Developing the "App" Part of the "DApp"
     Now that we've got PAB ready for action, let's return back to the top level of this Obelisk project (`plutus-use-cases/use-case-2`) and briefly go over this application's components.
@@ -60,5 +68,5 @@ By the end of this README you will be able to run the POKE-DEX on your machine l
       - Common components are found within the `common` folder. As of now this mostly consists of middleware, datatypes that are shared between the frontend and backend components, as well as datatypes that are shared with PAB (shared data types are to be removed in coming Obelisk updates).
       - Frontend components are found within the `frontend` folder. This is where dom building, event handling, and API calls to `backend` components are taking place. The frontend is written using Reflex-FRP. The frontend fetches a significant amount of it's information about PAB's smart contract state via use of PAB's websocket and API endpoints via the websocket. Some interesting modules to look at are `frontend/src/Frontend.hs` and `frontend/src/Frontend/WebsocketParse.hs`.
 
-  1. Ok less talking, more poking user interfaces! While PAB is running and listening on port 8080, in a different terminal, run `ob run --no-interpret ./dep/plutus-starter`
+  1. Ok less talking, more poking user interfaces! While PAB is running and listening on port 9080, in a different terminal, run `ob run --no-interpret ./dep/plutus-starter`
     This will start up an interactive repl that will refresh itself anytime you make changes to the 3 component folders I've mentioned above (frontend, common, and backend). If everything compiled, the Dapp should now be running on localhost:8000. Have fun!
