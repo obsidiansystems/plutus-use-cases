@@ -1,0 +1,61 @@
+name: backend
+version: 0.1
+cabal-version: >= 1.8
+build-type: Simple
+
+library
+  hs-source-dirs: src
+  if impl(ghcjs)
+    buildable: False
+  build-depends: aeson
+               , aeson-gadt-th
+               , base
+               , beam-automigrate
+               , beam-core
+               , beam-postgres
+               , bytestring
+               , common
+               , constraints-extras
+               , dense-linear-algebra
+               , dependent-sum
+               , dependent-sum-template
+               , frontend
+               , gargoyle-postgresql
+               , gargoyle-postgresql-connect
+               , http-client
+               , lens
+               , lens-aeson
+               , monad-logger
+               , mtl
+               , postgresql-simple
+               , resource-pool
+               , rhyolite-backend
+               , rhyolite-backend-db
+               , rhyolite-backend-notification-postgres
+               , scientific
+               , statistics
+               , text
+               , time
+               , obelisk-backend
+               , obelisk-route
+               , unordered-containers
+               , vector
+               , vessel
+               , websockets
+  exposed-modules:
+    Backend
+    Backend.Notification
+    Backend.Schema
+  ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
+
+executable backend
+  main-is: main.hs
+  hs-source-dirs: src-bin
+  ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
+  if impl(ghcjs)
+    buildable: False
+  build-depends: base
+               , backend
+               , common
+               , frontend
+               , obelisk-backend

@@ -1,0 +1,25 @@
+name: common
+version: 0.1
+cabal-version: >= 1.2
+build-type: Simple
+
+library
+  hs-source-dirs: src
+  build-depends: aeson
+               , aeson-gadt-th
+               , base
+               , beam-core
+               , constraints-extras
+               , dependent-sum-template
+               , mtl
+               , obelisk-route
+               , text
+               , th-abstraction
+               , vessel
+  exposed-modules:
+    Common.Api
+    Common.Route
+    Common.Schema
+    Common.Plutus.Contracts.Uniswap.Types
+    Common.Plutus.Contracts.Uniswap.Estimates
+  ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits

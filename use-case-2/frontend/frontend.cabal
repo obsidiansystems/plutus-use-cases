@@ -1,0 +1,49 @@
+name: frontend
+version: 0.1
+cabal-version: >= 1.8
+build-type: Simple
+
+library
+  hs-source-dirs: src
+  build-depends: base
+               , aeson
+               , aeson-gadt-th
+               , common
+               , containers
+               , groom
+               , obelisk-frontend
+               , obelisk-route
+               , jsaddle
+               , reflex-dom
+               , lens
+               , lens-aeson
+               , obelisk-executable-config-lookup
+               , obelisk-generated-static
+               , rhyolite-frontend
+               , safe
+               , scientific
+               , text
+               , unordered-containers
+               , vector
+               , vessel
+  exposed-modules:
+    Frontend
+    Frontend.WebsocketParse
+  ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
+
+executable frontend
+  main-is: main.hs
+  hs-source-dirs: src-bin
+  build-depends: base
+               , common
+               , obelisk-frontend
+               , obelisk-route
+               , reflex-dom
+               , obelisk-generated-static
+               , frontend
+  ghc-options: -threaded -O -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -fno-show-valid-hole-fits
+  if impl(ghcjs)
+    ghc-options: -dedupe
+    cpp-options: -DGHCJS_BROWSER
+  if os(darwin)
+    ghc-options: -dynamic
