@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "rhyolite",
-  "branch": "notification",
+  "branch": "notification-ghc810",
   "private": false,
-  "rev": "d8000e492ad01b2ef9a3d5da8c20b96acbab8194",
-  "sha256": "03qd9zbj2rw6awr21cvryd5jz7nv40vfrkvhwsmhbcbhd85109d3"
+  "rev": "878a3dbed655d9415a8f9e125cc4bfa213236054",
+  "sha256": "1sahryaphkxqfp1axcb4bazplxshbmj2nbi4cmfs0nbs8smccbq9"
 }
