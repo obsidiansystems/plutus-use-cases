@@ -32,7 +32,16 @@ p = project ./. ({ pkgs, ... }: let haskellLib = pkgs.haskell.lib; in {
     (self: super: {
       cardano-crypto = self.callCabal2nix "cardano-crypto" deps.cardano-crypto {};
       cardano-addresses = haskellLib.doJailbreak (self.callCabal2nixWithOptions "cardano-addresses" (deps.cardano-addresses + "/core") "--no-hpack" {});
+      cardano-prelude = self.callCabal2nix "cardano-prelude" (deps.cardano-prelude + "/cardano-prelude") {};
+      # prop_aeson_canonical:     FAIL                            │
+      # *** Failed! Falsified (after 12 tests and 4 shrinks):   │
+      # JSObject [("\CAN$%OW",JSObject [])]                     │
+      # Use --quickcheck-replay=687955 to reproduce.
+      canonical-json = haskellLib.dontCheck (haskellLib.doJailbreak (haskellLib.markUnbroken super.canonical-json));
+      cborg = haskellLib.dontCheck super.cborg; # tests don't build for base16-bytestring >=1
+      base16-bytestring = self.callHackage "base16-bytestring" "1.0.0.0" {}; # for cardano-prelude
       unordered-containers = self.callHackage "unordered-containers" "0.2.12.0" {}; # for cardano-addresses
+      protolude = self.callHackage "protolude" "0.3.0" {}; # for cardano-prelude
       formatting = self.callHackage "formatting" "7.1.0" {};
       fmt = self.callCabal2nix "fmt" deps.fmt {};
       bech32 = haskellLib.dontCheck (self.callCabal2nix "bech32" (deps.bech32 + "/bech32") {}); # 1.1.1 ; tests rely on bech32 executable
