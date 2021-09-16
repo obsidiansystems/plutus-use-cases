@@ -19,7 +19,10 @@ let
 deps = obelisk.nixpkgs.thunkSet ./dep;
 rhyolite = (import deps.rhyolite { inherit obelisk; });
 foldExtensions = lib.foldr lib.composeExtensions (_: _: {});
-p = project ./. ({ pkgs, ... }: let haskellLib = pkgs.haskell.lib; in {
+p = project ./. ({ pkgs, ... }: let
+  haskellLib = pkgs.haskell.lib;
+  libsodium-vrf = pkgs.callPackage (deps.iohk-nix + "/overlays/crypto/libsodium.nix") {};
+in {
   overrides = foldExtensions [
     rhyolite.haskellOverrides
     (self: super: {
@@ -37,8 +40,8 @@ p = project ./. ({ pkgs, ... }: let haskellLib = pkgs.haskell.lib; in {
       cardano-binary = haskellLib.enableCabalFlag (self.callCabal2nix "cardano-binary" (deps.cardano-base + "/binary") {}) "development";
       cardano-binary-test = haskellLib.enableCabalFlag (self.callCabal2nix "cardano-binary-test" (deps.cardano-base + "/binary/test") {}) "development";
       cardano-slotting = self.callCabal2nix "cardano-slotting" (deps.cardano-base + "/slotting") {};
-      cardano-crypto-praos = haskellLib.addPkgconfigDepend (self.callCabal2nix "cardano-crypto-praos" (deps.cardano-base + "/cardano-crypto-praos") {}) pkgs.libsodium; # TODO use libsodium-vrf fork
-      cardano-crypto-class = haskellLib.addPkgconfigDepend (self.callCabal2nix "cardano-crypto-class" (deps.cardano-base + "/cardano-crypto-class") {}) pkgs.libsodium; # TODO use libsodium-vrf fork
+      cardano-crypto-praos = haskellLib.addPkgconfigDepend (self.callCabal2nix "cardano-crypto-praos" (deps.cardano-base + "/cardano-crypto-praos") {}) libsodium-vrf;
+      cardano-crypto-class = haskellLib.addPkgconfigDepend (self.callCabal2nix "cardano-crypto-class" (deps.cardano-base + "/cardano-crypto-class") {}) libsodium-vrf;
       strict-containers = self.callCabal2nix "strict-containers" (deps.cardano-base + "/strict-containers") {};
       cardano-crypto-wrapper = haskellLib.dontCheck (self.callCabal2nix "cardano-crypto-wrapper" (deps.cardano-ledger-specs + "/byron/crypto") {});
       # tests fail on some env var not being set
