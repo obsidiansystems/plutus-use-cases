@@ -18,15 +18,27 @@ with obelisk;
 let
 deps = obelisk.nixpkgs.thunkSet ./dep;
 rhyolite = (import deps.rhyolite { inherit obelisk; });
+foldExtensions = lib.foldr lib.composeExtensions (_: _: {});
 p = project ./. ({ pkgs, ... }: let haskellLib = pkgs.haskell.lib; in {
-  overrides = pkgs.lib.composeExtensions
+  overrides = foldExtensions [
     rhyolite.haskellOverrides
     (self: super: {
       beam-core = haskellLib.doJailbreak super.beam-core; # upstream to reflex-platform; also update aeson to track >=1.5
       beam-migrate = haskellLib.doJailbreak super.beam-migrate; # upstream to reflex-platform; also update aeson to track >=1.5
       beam-automigrate = haskellLib.doJailbreak (self.callHackage "beam-automigrate" "0.1.2.0" {}); # upstream to reflex-platform; also update aeson to track >=1.5
       beam-postgres = haskellLib.doJailbreak super.beam-postgres; # upstream to reflex-platform; also update aeson to track >=1.5
-    });
+    })
+    # overlay for cardano pkgs
+    (self: super: {
+      cardano-crypto = self.callCabal2nix "cardano-crypto" deps.cardano-crypto {};
+      cardano-addresses = haskellLib.doJailbreak (self.callCabal2nixWithOptions "cardano-addresses" (deps.cardano-addresses + "/core") "--no-hpack" {});
+      unordered-containers = self.callHackage "unordered-containers" "0.2.12.0" {}; # for cardano-addresses
+      formatting = self.callHackage "formatting" "7.1.0" {};
+      fmt = self.callCabal2nix "fmt" deps.fmt {};
+      bech32 = haskellLib.dontCheck (self.callCabal2nix "bech32" (deps.bech32 + "/bech32") {}); # 1.1.1 ; tests rely on bech32 executable
+      bech32-th = self.callCabal2nix "bech32-th" (deps.bech32 + "/bech32-th") {}; #1.1.1
+    })
+  ];
   android.applicationId = "systems.obsidian.obelisk.examples.minimal";
   android.displayName = "Obelisk Minimal Example";
   ios.bundleIdentifier = "systems.obsidian.obelisk.examples.minimal";
