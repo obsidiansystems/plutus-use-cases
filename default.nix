@@ -33,6 +33,10 @@ p = project ./. ({ pkgs, ... }: let haskellLib = pkgs.haskell.lib; in {
       cardano-crypto = self.callCabal2nix "cardano-crypto" deps.cardano-crypto {};
       cardano-addresses = haskellLib.doJailbreak (self.callCabal2nixWithOptions "cardano-addresses" (deps.cardano-addresses + "/core") "--no-hpack" {});
       cardano-prelude = self.callCabal2nix "cardano-prelude" (deps.cardano-prelude + "/cardano-prelude") {};
+      cardano-prelude-test = self.callCabal2nix "cardano-prelude-test" (deps.cardano-prelude + "/cardano-prelude-test") {};
+      cardano-binary = haskellLib.enableCabalFlag (self.callCabal2nix "cardano-binary" (deps.cardano-base + "/binary") {}) "development";
+      cardano-slotting = self.callCabal2nix "cardano-slotting" (deps.cardano-base + "/slotting") {};
+      nothunks = self.callHackage "nothunks" "0.1.0.0" {};
       # prop_aeson_canonical:     FAIL                            │
       # *** Failed! Falsified (after 12 tests and 4 shrinks):   │
       # JSObject [("\CAN$%OW",JSObject [])]                     │
