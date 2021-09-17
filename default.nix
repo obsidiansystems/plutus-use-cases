@@ -93,7 +93,10 @@ in {
       hedgehog-extras = self.callCabal2nix "hedgehog-extras" deps.hedgehog-extras {};
 
       # cardano-wallet
-      cardano-wallet-core = self.callCabal2nix "cardano-wallet-core" (deps.cardano-wallet + "/lib/core") {};
+      cardano-wallet-cli = haskellLib.dontCheck (self.callCabal2nix "cardano-wallet-cli" (deps.cardano-wallet + "/lib/cli") {});
+      cardano-wallet-core = haskellLib.overrideCabal (self.callCabal2nix "cardano-wallet-core" (deps.cardano-wallet + "/lib/core") {}) (drv: {
+        preBuild = ''export SWAGGER_YAML=${deps.cardano-wallet + "/specifications/api/swagger.yaml"}'';
+      });
       cardano-wallet-launcher = self.callCabal2nix "cardano-wallet-launcher" (deps.cardano-wallet + "/lib/launcher") {};
       cardano-wallet-test-utils = self.callCabal2nix "cardano-wallet-test-utils" (deps.cardano-wallet + "/lib/test-utils") {};
       cardano-numeric = self.callCabal2nix "cardano-numeric" (deps.cardano-wallet + "/lib/numeric") {};
@@ -110,12 +113,15 @@ in {
       flat = self.callCabal2nix "flat" deps.flat {};
       size-based = haskellLib.doJailbreak super.size-based;
 
+      # cardano-addresses
+      cardano-addresses = haskellLib.doJailbreak (self.callCabal2nixWithOptions "cardano-addresses" (deps.cardano-addresses + "/core") "--no-hpack" {});
+      cardano-addresses-cli = haskellLib.dontCheck (self.callCabal2nixWithOptions "cardano-addresses-cli" (deps.cardano-addresses + "/command-line") "--no-hpack" { cardano-address = null; });
+
       # other iohk
       Win32-network = self.callCabal2nix "Win32-network" deps.Win32-network {};
       cardano-sl-x509 = self.callCabal2nix "cardano-sl-x509" deps.cardano-sl-x509 {};
       goblins = haskellLib.dontCheck (self.callCabal2nix "goblins" deps.goblins {});
       cardano-crypto = self.callCabal2nix "cardano-crypto" deps.cardano-crypto {};
-      cardano-addresses = haskellLib.doJailbreak (self.callCabal2nixWithOptions "cardano-addresses" (deps.cardano-addresses + "/core") "--no-hpack" {});
       bech32 = haskellLib.dontCheck (self.callCabal2nix "bech32" (deps.bech32 + "/bech32") {}); # 1.1.1 ; tests rely on bech32 executable
       bech32-th = self.callCabal2nix "bech32-th" (deps.bech32 + "/bech32-th") {}; #1.1.1
 
@@ -147,6 +153,7 @@ in {
       # QuickCheck constraints
       indexed-traversable-instances = haskellLib.dontCheck (self.callHackage "indexed-traversable-instances" "0.1" {});
       hs-rqlite = haskellLib.doJailbreak super.hs-rqlite;
+      tls = self.callHackage "tls" "1.5.5" {};
 
       persistent = haskellLib.dontCheck (self.callHackage "persistent" "2.13.0.0" {}); # tests fail to find modules
       persistent-test = self.callHackage "persistent-test" "2.13.0.0" {};
@@ -158,7 +165,7 @@ in {
       sqlite = null; #haskellLib.markUnbroken super.sqlite;
 
       nothunks = haskellLib.dontCheck (self.callHackage "nothunks" "0.1.3" {});
-      moo = haskellLib.markUnbroken super.moo;
+      moo = haskellLib.dontCheck (haskellLib.markUnbroken super.moo); # tests are failing :/
       gray-code = haskellLib.overrideCabal (haskellLib.markUnbroken super.gray-code) {
         preCompileBuildDriver = "rm Setup.hs";
       };
@@ -189,21 +196,28 @@ in {
       hspec-expectations = self.callHackage "hspec-expectations" "0.8.2" {};
       hspec-meta = self.callHackage "hspec-meta" "2.7.8" {};
       QuickCheck = self.callHackage "QuickCheck" "2.14.2" {};
+      quickcheck-instances = self.callHackage "quickcheck-instances" "0.3.25.2" {};
       hedgehog = self.callHackage "hedgehog" "1.0.5" {};
       hedgehog-quickcheck = self.callHackage "hedgehog-quickcheck" "0.1.1" {};
       # allow newer QuickCheck/hspec
-      time-compat = haskellLib.doJailbreak super.time-compat;
+      time-compat = self.callHackage "time-compat" "1.9.5" {}; # haskellLib.doJailbreak super.time-compat;
+      strict = self.callHackage "strict" "0.4.0.1" {};
       vector = haskellLib.doJailbreak super.vector;
       attoparsec = haskellLib.doJailbreak super.attoparsec;
       random = haskellLib.dontCheck (self.callHackage "random" "1.2.0" {});
+      generic-random = haskellLib.dontCheck (self.callHackage "generic-random" "1.4.0.0" {});
       splitmix = haskellLib.dontCheck (self.callHackage "splitmix" "0.1.0.3" {}); # dontCheck to avoid cycle with random
       http-api-data = haskellLib.doJailbreak super.http-api-data;
-      algebraic-graphs = haskellLib.doJailbreak super.algebraic-graphs;
+      algebraic-graphs = haskellLib.doJailbreak (haskellLib.dontCheck super.algebraic-graphs);
       cassava = haskellLib.doJailbreak super.cassava;
       psqueues = haskellLib.doJailbreak super.psqueues;
       tasty-hedgehog = haskellLib.doJailbreak super.tasty-hedgehog;
       tasty-hspec = self.callHackage "tasty-hspec" "1.2" {};
       tasty-discover = haskellLib.dontCheck super.tasty-discover;
+      test-framework = haskellLib.doJailbreak super.test-framework;
+      test-framework-quickcheck2 = haskellLib.doJailbreak super.test-framework-quickcheck2;
+      hashable = haskellLib.doJailbreak super.hashable;
+      snap-core = haskellLib.dontCheck (self.callHackage "snap-core" "1.0.4.2" {});
     })
   ];
   android.applicationId = "systems.obsidian.obelisk.examples.minimal";
