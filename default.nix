@@ -217,7 +217,15 @@ in {
       test-framework = haskellLib.doJailbreak super.test-framework;
       test-framework-quickcheck2 = haskellLib.doJailbreak super.test-framework-quickcheck2;
       hashable = haskellLib.doJailbreak super.hashable;
-      snap-core = haskellLib.dontCheck (self.callHackage "snap-core" "1.0.4.2" {});
+      snap-core = haskellLib.dontCheck (self.callCabal2nix "snap-core" deps.snap-core {}); # unreleased 1.0.4.3
+      map-syntax = haskellLib.doJailbreak super.map-syntax;
+      xmlhtml = haskellLib.doJailbreak super.xmlhtml;
+      # TODO: upstream
+      hspec-webdriver = self.callCabal2nix "hspec-webdriver" deps.hspec-webdriver-clone {};
+      websockets = haskellLib.doJailbreak (self.callHackage "websockets" "0.12.7.2" {});
+      patch = haskellLib.doJailbreak super.patch;
+      reflex-dom-core = haskellLib.doJailbreak super.reflex-dom-core;
+      reflex = haskellLib.doJailbreak (haskellLib.dontCheck super.reflex);
     })
   ];
   android.applicationId = "systems.obsidian.obelisk.examples.minimal";
