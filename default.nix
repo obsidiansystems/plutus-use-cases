@@ -220,6 +220,7 @@ in {
       snap-core = haskellLib.dontCheck (self.callCabal2nix "snap-core" deps.snap-core {}); # unreleased 1.0.4.3
       map-syntax = haskellLib.doJailbreak super.map-syntax;
       xmlhtml = haskellLib.doJailbreak super.xmlhtml;
+      dom-lt = haskellLib.markUnbroken super.dom-lt;
       # TODO: upstream
       hspec-webdriver = self.callCabal2nix "hspec-webdriver" deps.hspec-webdriver-clone {};
       websockets = haskellLib.doJailbreak (self.callHackage "websockets" "0.12.7.2" {});
