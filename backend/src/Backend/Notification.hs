@@ -8,7 +8,7 @@
 
 module Backend.Notification where
 
-import Data.Aeson
+-- import Data.Aeson
 import Data.Aeson.GADT.TH
 import Data.Constraint.Extras.TH
 import Data.GADT.Show.TH

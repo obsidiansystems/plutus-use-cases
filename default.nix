@@ -183,10 +183,6 @@ in {
       typerep-map = haskellLib.doJailbreak (haskellLib.markUnbroken super.typerep-map);
       primitive = haskellLib.dontCheck (self.callHackage "primitive" "0.7.1.0" {}); # cardano-crypto-class min bound
       streaming-bytestring = self.callHackage "streaming-bytestring" "0.2.1" {}; # cardano-crypto-class min bound
-      # prop_aeson_canonical:     FAIL                            │
-      # *** Failed! Falsified (after 12 tests and 4 shrinks):   │
-      # JSObject [("\CAN$%OW",JSObject [])]                     │
-      # Use --quickcheck-replay=687955 to reproduce.
       canonical-json = haskellLib.dontCheck (haskellLib.doJailbreak (haskellLib.markUnbroken super.canonical-json));
       cborg = haskellLib.dontCheck super.cborg; # tests don't build for base16-bytestring >=1
       text-conversions = self.callHackage "text-conversions" "0.3.1" {}; # compatible with base16-bytestring 1.x

@@ -21,15 +21,36 @@ library
                , gargoyle-postgresql
                , gargoyle-postgresql-connect
                , monad-logger
+               , monad-logger-extras
+               , lens
                , mtl
+               , obelisk-backend
+               , obelisk-route
                , postgresql-simple
                , resource-pool
                , rhyolite-backend
                , rhyolite-backend-db
                , rhyolite-backend-notification-postgres
-               , obelisk-backend
-               , obelisk-route
+               , stm
+               , transformers
+               , text
                , vessel
+
+               , cardano-api
+               , cardano-addresses
+               , cardano-addresses-cli
+               , cardano-wallet-core
+               , cardano-slotting
+               , containers
+               , freer-extras
+               , freer-simple
+               , optparse-applicative
+               , ouroboros-network
+               , plutus-chain-index
+               , plutus-ledger
+               , iohk-monitoring
+               , yaml
+               , prettyprinter >=1.1.0.1
   exposed-modules:
     Backend
     Backend.Notification

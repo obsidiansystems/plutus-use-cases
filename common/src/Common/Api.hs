@@ -6,7 +6,7 @@
 {-# LANGUAGE TypeFamilies #-}
 module Common.Api where
 
-import Data.Aeson
+-- import Data.Aeson
 import Data.Aeson.GADT.TH
 import Data.Constraint.Extras.TH
 import Data.Int
