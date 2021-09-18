@@ -71,6 +71,7 @@ in {
       contra-tracer = haskellLib.dontCheck (self.callCabal2nix "contra-tracer" (deps.iohk-monitoring-framework + "/contra-tracer") {});
       iohk-monitoring = haskellLib.dontCheck (self.callCabal2nix "iohk-monitoring" (deps.iohk-monitoring-framework + "/iohk-monitoring") {});
       tracer-transformers = haskellLib.dontCheck (self.callCabal2nix "tracer-transformers" (deps.iohk-monitoring-framework + "/tracer-transformers") {});
+      lobemo-backend-ekg = self.callCabal2nix "lobemo-backend-ekg" (deps.iohk-monitoring-framework + "/plugins/backend-ekg") {};
 
       # ouroboros-network
       ouroboros-network = haskellLib.dontCheck (haskellLib.doJailbreak (self.callCabal2nix "ouroboros-network" (deps.ouroboros-network + "/ouroboros-network") {}));
@@ -93,10 +94,12 @@ in {
       hedgehog-extras = self.callCabal2nix "hedgehog-extras" deps.hedgehog-extras {};
 
       # cardano-wallet
+      cardano-wallet = haskellLib.dontCheck (self.callCabal2nix "cardano-wallet" (deps.cardano-wallet + "/lib/shelley") {}); # pending setting up envars to fix tests
       cardano-wallet-cli = haskellLib.dontCheck (self.callCabal2nix "cardano-wallet-cli" (deps.cardano-wallet + "/lib/cli") {});
       cardano-wallet-core = haskellLib.overrideCabal (self.callCabal2nix "cardano-wallet-core" (deps.cardano-wallet + "/lib/core") {}) (drv: {
         preBuild = ''export SWAGGER_YAML=${deps.cardano-wallet + "/specifications/api/swagger.yaml"}'';
       });
+      cardano-wallet-core-integration = (self.callCabal2nix "cardano-wallet-core-integration" (deps.cardano-wallet + "/lib/core-integration") {});
       cardano-wallet-launcher = self.callCabal2nix "cardano-wallet-launcher" (deps.cardano-wallet + "/lib/launcher") {};
       cardano-wallet-test-utils = self.callCabal2nix "cardano-wallet-test-utils" (deps.cardano-wallet + "/lib/test-utils") {};
       cardano-numeric = self.callCabal2nix "cardano-numeric" (deps.cardano-wallet + "/lib/numeric") {};
