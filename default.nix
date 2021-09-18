@@ -105,7 +105,15 @@ in {
 
       # plutus (uh oh!)
       plutus-core = self.callCabal2nix "plutus-core" (deps.plutus + "/plutus-core") {};
+      plutus-ledger = haskellLib.overrideCabal (self.callCabal2nix "plutus-ledger" (deps.plutus + "/plutus-ledger") {}) (drv: {
+        doHaddock = false; # to avoid plutus-tx-plugin errors
+        # github.com/haskell/cabal/issues/7270
+        configureFlags = [ "--dependency=cardano-api:gen=cardano-api-1.29.0-JelLqMXA7h2IMSzW2NGfyr-gen"]; # gross, but it works
+      });
+      freer-extras = self.callCabal2nix "freer-extras" (deps.plutus + "/freer-extras") {};
+      plutus-chain-index = self.callCabal2nix "plutus-chain-index" (deps.plutus + "/plutus-chain-index") {};
       plutus-tx = self.callCabal2nix "plutus-tx" (deps.plutus + "/plutus-tx") {};
+      plutus-tx-plugin = self.callCabal2nix "plutus-tx-plugin" (deps.plutus + "/plutus-tx-plugin") {};
       plutus-ledger-api = self.callCabal2nix "plutus-ledger-api" (deps.plutus + "/plutus-ledger-api") {};
       prettyprinter-configurable = self.callCabal2nix "prettyprinter-configurable" (deps.plutus + "/prettyprinter-configurable") {};
       word-array = self.callCabal2nix "word-array" (deps.plutus + "/word-array") {};
