@@ -235,7 +235,7 @@ in {
       websockets = haskellLib.doJailbreak (self.callHackage "websockets" "0.12.7.2" {});
       patch = haskellLib.doJailbreak super.patch;
       reflex-dom-core = haskellLib.doJailbreak super.reflex-dom-core;
-      reflex = haskellLib.doJailbreak (haskellLib.dontCheck super.reflex);
+      reflex = haskellLib.doJailbreak (haskellLib.dontCheck super.reflex); # allow newer random & witherable
     })
   ];
   android.applicationId = "systems.obsidian.obelisk.examples.minimal";
