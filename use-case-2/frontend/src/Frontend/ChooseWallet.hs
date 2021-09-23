@@ -53,6 +53,9 @@ chooseWallet = do
       el "p" $ text "POKE-DEX is a proto-type example of how a token exchange decentralized application would behave using smart contracts on the Cardano Blockchain. Below are some crypto wallets you can choose from to play around with this Dapp's features. You will be able to swap Ada for supported tokens, swap tokens, stake ada or other tokens for liquidity, and observe the wallet's portfoilio. Don't worry, this is not spending anyone's actual ADA. Select a wallet and give it a try!"
       elClass "h3" "display-5 fw-bold" $ text "Wallet Accounts"
       elClass "p" "lead" $ text "Choose one of the avaiable wallets below: "
+      do
+        e <- button "refresh wallets"
+        requesting_ $ Api_RefreshWallets <$ e
       dmmWalletIds <- viewContracts
       dyn_ $ ffor dmmWalletIds $ \case
         Nothing -> do

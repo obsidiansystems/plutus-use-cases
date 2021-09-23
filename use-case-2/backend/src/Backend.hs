@@ -88,6 +88,7 @@ requestHandler httpManager pool = RequestHandler $ \case
   Api_CallFunds cid -> callFunds httpManager cid
   Api_CallPools cid -> callPools httpManager cid
   Api_EstimateTransactionFee action -> estimateTransactionFee pool action
+  Api_RefreshWallets -> getWallets httpManager pool
 
 notifyHandler :: DbNotification Notification -> DexV Proxy -> IO (DexV Identity)
 notifyHandler _ _ = return mempty

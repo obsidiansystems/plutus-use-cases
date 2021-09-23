@@ -44,6 +44,7 @@ data Api :: * -> * where
   Api_CallFunds :: ContractInstanceId Text -> Api ()
   Api_CallPools :: ContractInstanceId Text -> Api ()
   Api_EstimateTransactionFee :: SmartContractAction -> Api Integer
+  Api_RefreshWallets :: Api ()
 
 deriveJSONGADT ''Api
 deriveArgDict ''Api
