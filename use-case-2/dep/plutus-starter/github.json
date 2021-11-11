@@ -1,8 +1,8 @@
 {
   "owner": "obsidiansystems",
   "repo": "plutus-starter",
-  "branch": "is-rename-tokens",
+  "branch": "is-11-2021-wallet-backend",
   "private": false,
-  "rev": "addb5a8148ee893ad1195460edc423e9da4b66e5",
-  "sha256": "1hj33sc4czdb984j7cpazyn3x1dsyr3wijh98sp30m6pclnzk14j"
+  "rev": "7fff305ef4654ee499e131c29528be60bc15e797",
+  "sha256": "08bifppybwcj1gc2r56k0fcjpn83df4z8irmx9lznic97fwa1j5q"
 }
