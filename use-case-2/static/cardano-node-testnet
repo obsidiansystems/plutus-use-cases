@@ -1,0 +1,27 @@
+#!/nix/store/xvvgw9sb8wk6d2c0j3ybn7sll67s3s4z-bash-4.4-p23/bin/bash
+export PATH=$PATH:/nix/store/xs38mci2dj4isxayifazwdma1dk9w9bl-coreutils-8.32/bin
+set -euo pipefail
+mkdir -p "$(dirname "state-node-testnet/node.socket")"
+echo "Starting: /nix/store/2yh84sahysrknq3zc2n53kq5ywv6mhfp-cardano-node-exe-cardano-node-1.31.0/bin/cardano-node run"
+   echo "--config /nix/store/5b6pry15w93fv0r0x9rc3r1ii5871lvr-config-0-0.json"
+   echo "--database-path state-node-testnet/db-testnet"
+   echo "--topology /nix/store/dpajyi2vaychwps1x7d20c2ddls4kf62-topology.yaml"
+   echo "--host-addr 0.0.0.0"
+   echo "--port 3001"
+   echo "--socket-path state-node-testnet/node.socket"
+   echo ""
+   echo ""
+   echo ""
+   echo ""
+   echo ""
+   echo "+RTS"
+   echo "-N2"
+   echo "-A16m"
+   echo "-qg"
+   echo "-qb"
+   echo "--disable-delayed-os-memory-return"
+   echo "-RTS"
+echo "..or, once again, in a single line:"
+echo "/nix/store/2yh84sahysrknq3zc2n53kq5ywv6mhfp-cardano-node-exe-cardano-node-1.31.0/bin/cardano-node run --config /nix/store/5b6pry15w93fv0r0x9rc3r1ii5871lvr-config-0-0.json --database-path state-node-testnet/db-testnet --topology /nix/store/dpajyi2vaychwps1x7d20c2ddls4kf62-topology.yaml --host-addr 0.0.0.0 --port 3001 --socket-path state-node-testnet/node.socket      +RTS -N2 -A16m -qg -qb --disable-delayed-os-memory-return -RTS"
+
+exec /nix/store/2yh84sahysrknq3zc2n53kq5ywv6mhfp-cardano-node-exe-cardano-node-1.31.0/bin/cardano-node run --config /nix/store/5b6pry15w93fv0r0x9rc3r1ii5871lvr-config-0-0.json --database-path state-node-testnet/db-testnet --topology /nix/store/dpajyi2vaychwps1x7d20c2ddls4kf62-topology.yaml --host-addr 0.0.0.0 --port 3001 --socket-path state-node-testnet/node.socket      +RTS -N2 -A16m -qg -qb --disable-delayed-os-memory-return -RTS $@
